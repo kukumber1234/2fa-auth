@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2FA: Email + Fingerprint</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+</head>
+<body>
+  <h2>Двухфакторная аутентификация</h2>
+
+  <input type="email" id="email" placeholder="Email" />
+  <button onclick="sendCode()">Получить код</button>
+
+  <div id="code-section" style="display:none; margin-top: 10px;">
+    <input type="text" id="code" placeholder="Введите код" />
+    <button onclick="verifyCode()">Подтвердить код</button>
+  </div>
+
+  <div id="step2" style="display:none; margin-top: 20px;">
+    <h3>Подтвердите отпечаток пальца</h3>
+    <button onclick="authenticateFingerprint()">Подтвердить отпечаток</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
