@@ -3,6 +3,7 @@
 })();
 
 let generatedCode = "";
+let savedCredentialId = null; // ID ключа отпечатка
 
 function sendCode() {
   const email = document.getElementById("email").value;
@@ -56,6 +57,7 @@ async function registerFingerprint() {
     };
 
     const credential = await navigator.credentials.create({ publicKey });
+    savedCredentialId = credential.rawId;
     alert("Отпечаток зарегистрирован ✅ Теперь можно подтверждать.");
   } catch (err) {
     alert("Ошибка регистрации отпечатка: " + err.message);
@@ -64,10 +66,21 @@ async function registerFingerprint() {
 
 async function authenticateFingerprint() {
   try {
+    if (!savedCredentialId) {
+      alert("Сначала нужно зарегистрировать отпечаток!");
+      return;
+    }
+
     const publicKey = {
       challenge: new Uint8Array(32),
       timeout: 60000,
-      allowCredentials: [],
+      allowCredentials: [
+        {
+          id: savedCredentialId,
+          type: "public-key",
+          transports: ["internal"]
+        }
+      ],
       userVerification: "preferred"
     };
 
