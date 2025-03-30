@@ -1,4 +1,3 @@
-// Подключение EmailJS
 (function() {
   emailjs.init("Cgl7uUTpPY3Yj63Ls");
 })();
@@ -30,29 +29,50 @@ function sendCode() {
 function verifyCode() {
   const code = document.getElementById("code").value;
   if (code === generatedCode) {
-    alert("Код подтверждён. Переход к отпечатку пальца.");
+    alert("Код подтверждён. Теперь отпечаток.");
     document.getElementById("step2").style.display = "block";
   } else {
     alert("Неверный код.");
   }
 }
 
-async function authenticateFingerprint() {
-  if (!window.PublicKeyCredential) {
-    alert("Ваш браузер не поддерживает WebAuthn");
-    return;
-  }
-
+async function registerFingerprint() {
   try {
     const publicKey = {
-      challenge: new Uint8Array([0x8C, 0x7D, 0x05, 0xD2]).buffer,
+      challenge: new Uint8Array(32),
+      rp: { name: "2FA Auth Site" },
+      user: {
+        id: new Uint8Array(16),
+        name: "user@example.com",
+        displayName: "User"
+      },
+      pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+      authenticatorSelection: {
+        authenticatorAttachment: "platform",
+        userVerification: "preferred"
+      },
+      timeout: 60000,
+      attestation: "direct"
+    };
+
+    const credential = await navigator.credentials.create({ publicKey });
+    alert("Отпечаток зарегистрирован ✅ Теперь можно подтверждать.");
+  } catch (err) {
+    alert("Ошибка регистрации отпечатка: " + err.message);
+  }
+}
+
+async function authenticateFingerprint() {
+  try {
+    const publicKey = {
+      challenge: new Uint8Array(32),
       timeout: 60000,
       allowCredentials: [],
       userVerification: "preferred"
     };
 
     const assertion = await navigator.credentials.get({ publicKey });
-    alert("Отпечаток подтверждён! Доступ разрешён ✅");
+    alert("Отпечаток подтверждён ✅ Доступ разрешён!");
   } catch (err) {
     alert("Ошибка при аутентификации: " + err.message);
   }
