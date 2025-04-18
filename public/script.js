@@ -3,7 +3,7 @@
 })();
 
 let generatedCode = "";
-let savedCredentialId = null; // ID ключа отпечатка
+let savedCredentialId = null;
 
 function sendCode() {
   const email = document.getElementById("email").value;
@@ -85,7 +85,18 @@ async function authenticateFingerprint() {
     };
 
     const assertion = await navigator.credentials.get({ publicKey });
-    alert("Отпечаток подтверждён ✅ Доступ разрешён!");
+
+    // ✅ УСПЕХ – показать финальный экран
+    document.body.innerHTML = "";
+    const successScreen = document.createElement("div");
+    successScreen.innerHTML = `
+      <div style="text-align:center; margin-top: 80px;">
+        <h1 style="font-size: 32px; color: green;">✅ Аутентификация сәтті өтті!</h1>
+        <p style="font-size: 20px;">Сіз жүйеге кірдіңіз. Рақмет!</p>
+      </div>
+    `;
+    document.body.appendChild(successScreen);
+
   } catch (err) {
     alert("Ошибка при аутентификации: " + err.message);
   }
